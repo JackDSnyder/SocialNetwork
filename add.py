@@ -12,7 +12,9 @@ names = [
     'Charles', 'Bella', 'Hunter', 'Aurora', 'Christian', 'Lucy', 'Thomas', 'Anna'
 ]
 
-
 for name in names:
+    print(f"INSERT INTO users('{name}@gmail.com')")
+
+for i in range(len(names)):
     num = random.randrange(1,999)
-    print(f"INSERT INTO accounts('{name}@gmail.com','{name}{name}{num}' )")
+    print(f"INSERT INTO accounts('{i+1}','{name}{name}{num}' )")
