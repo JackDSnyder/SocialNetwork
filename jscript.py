@@ -8,28 +8,28 @@ cursor = conn.cursor()
 def create_user(email):
     cursor.execute("INSERT INTO users (email) VALUES (?)", (email,))
     conn.commit()
-    print("User created successfully")
+    print(f"User {email} created successfully")
 
 def create_account(user_id, username):
     cursor.execute("INSERT INTO accounts (user_id, username) VALUES (?, ?)", (user_id, username))
     conn.commit()
-    print("Account created successfully")
+    print(f"Account created successfully with the username {username} and email {user_id}")
 
 def follow_account(follower_id, following_id):
     cursor.execute("INSERT INTO followers (follower_id, following_id) VALUES (?, ?)", (follower_id, following_id))
     conn.commit()
-    print("Followed successfully")
+    print(f"{follower_id} is now following {following_id}")
 
 def create_post(creator_id, content):
     timestamp = datetime.now()
     cursor.execute("INSERT INTO posts (creator, timestamp, content) VALUES (?, ?, ?)", (creator_id, timestamp, content))
     conn.commit()
-    print("Post created successfully")
+    print(f"posted to account ({creator_id}) at " + timestamp)
     
 def like_post(post_id, liker_id):
     cursor.execute("INSERT INTO likes (post_id, liker) VALUES (?, ?)", (post_id, liker_id))
     conn.commit()
-    print("Post liked successfully")
+    print(f"Post liked by {liker_id}")
 
 def report_post(post_id, reporter_id):
     cursor.execute("INSERT INTO reports (post_id, reporter) VALUES (?, ?)", (post_id, reporter_id))
