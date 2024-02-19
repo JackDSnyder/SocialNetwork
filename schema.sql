@@ -21,7 +21,9 @@ CREATE TABLE accounts (
 
 CREATE TABLE followers (
     follower_id INTEGER NOT NULL,
+    follower_username TEXT NOT NULL,
     following_id INTEGER NOT NULL,
+    following_username TEXT NOT NULL,
     FOREIGN KEY (follower_id) REFERENCES accounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (following_id) REFERENCES accounts (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
