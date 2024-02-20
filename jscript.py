@@ -74,13 +74,13 @@ def report_post(post_id, reporter):
 # Need to modify to make the account viewing the feed
 # not be able to see posts they have reported
 def display_feed():
-    cursor.execute("""SELECT p.content, a.username, p.timestamp 
+    cursor.execute("""SELECT p.content, a.username, p.timestamp,p.id
                    FROM posts p  
                    JOIN accounts a ON p.id = a.id""")
     feed = cursor.fetchall()
     for post in feed:
-        content, username, timestamp = post
-        print(f"User: {username} posted '{content}' at {timestamp}")
+        content, username, timestamp, id = post
+        print(f"User: {username} posted '{content}' with the id {id} at {timestamp}")
 
 
 
