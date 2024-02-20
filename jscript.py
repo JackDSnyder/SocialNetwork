@@ -71,16 +71,15 @@ def report_post(post_id, reporter_id):
     conn.commit()
     print("Post reported successfully")
 
-# Need to modify to make the account viewing the feed
 # not be able to see posts they have reported
 def display_feed():
-    cursor.execute("""SELECT p.content, a.username, p.timestamp 
+    cursor.execute("""SELECT p.content, a.username, p.timestamp,p.id
                    FROM posts p  
                    JOIN accounts a ON p.id = a.id""")
     feed = cursor.fetchall()
     for post in feed:
-        content, username, timestamp = post
-        print(f"User: {username} posted '{content}' at {timestamp}")
+        content, username, timestamp, id = post
+        print(f"User: {username} posted '{content}' with id {id} at {timestamp}")
 
 
 # ...
@@ -94,7 +93,7 @@ def main():
     parser.add_argument('--content', help="The text that goes into a post")
     parser.add_argument('--follower', help='Follower ID (required for follow_account)')
     parser.add_argument('--following', help='Following ID (required for follow_account)')
-    parser.add_argument('--post_id', type=int, help='Post ID (required for like_post and report_post)')
+    parser.add_argument('--post_id', help='Post ID (required for like_post and report_post)')
     args = parser.parse_args()
 
     if args.action == 'create_user':
@@ -111,7 +110,6 @@ def main():
         show_followers_post(args.username)
     elif args.action == 'display_feed':
         display_feed()
-
     elif args.action == 'like_post':
         like_post(args.post_id, args.user_id)
     elif args.action == 'report_post':
