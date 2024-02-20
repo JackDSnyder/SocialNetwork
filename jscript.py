@@ -60,7 +60,6 @@ def show_followers_post(username):
         print(f"User: {following_username} posted '{content}' at {timestamp}")
 
 
-# Need to Do
 def like_post(post_id, liker):
     cursor.execute("INSERT INTO likes (post_id, liker) VALUES (?, (SELECT id FROM accounts WHERE username = ?))", (post_id, liker))
     conn.commit()
@@ -71,12 +70,8 @@ def report_post(post_id, reporter):
     conn.commit()
     print("Post reported successfully")
 
-# Need to modify to make the account viewing the feed
-# not be able to see posts they have reported
-def display_feed():
-    cursor.execute("""SELECT p.content, a.username, p.timestamp,p.id
-                   FROM posts p  
-                   JOIN accounts a ON p.id = a.id""")
+def catch_up_feed():
+    cursor.execute("""SELECT p.creator,p.timestamp,p.content, COUNT(DISTINCT l.liker) AS Likes FROM posts p JOIN likes l ON p.id = l.post_id GROUP BY p.id;""")
     feed = cursor.fetchall()
     for post in feed:
         content, username, timestamp, id = post
@@ -86,7 +81,7 @@ def display_feed():
 
 def main():
     parser = argparse.ArgumentParser(description='Simple social network CLI')
-    parser.add_argument('action', choices=['create_user', 'create_account', 'follow_account', 'unfollow_account', 'create_post', 'display_feed', 'like_post', 'report_post','show_followers_post'],
+    parser.add_argument('action', choices=['create_user', 'create_account', 'follow_account', 'unfollow_account', 'create_post', 'catch_up_feed', 'like_post', 'report_post','show_followers_post'],
                         help='Action to perform')
     parser.add_argument('--email', help='Email address (optional for create_user)')    
     parser.add_argument('--username', help='Username (required for create_account)')
@@ -108,9 +103,8 @@ def main():
         unfollow_account(args.follower, args.following)
     elif args.action == 'show_followers_post':
         show_followers_post(args.username)
-    elif args.action == 'display_feed':
-        display_feed()
-
+    elif args.action == 'catch_up_feed':
+        catch_up_feed()
     elif args.action == 'like_post':
         like_post(args.post_id, args.username)
     elif args.action == 'report_post':
@@ -123,3 +117,6 @@ if __name__ == "__main__":
 # Close the connection
 conn.close()
 
+
+
+SELECT p.creator,p.timestamp,p.content, COUNT(l.liker) AS Likes FROM posts p JOIN likes l ON p.id = l.post_id GROUP BY p.id;

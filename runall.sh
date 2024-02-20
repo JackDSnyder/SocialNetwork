@@ -116,6 +116,22 @@ python3 jscript.py show_followers_post --username secretgarden
 echo "======================================================="
 
 
+# Liking multiple posts
+echo ""
+echo "Liking multiple posts as secretgarden..."
+python3 jscript.py like_post --post_id 2 --username secretgarden
+python3 jscript.py like_post --post_id 4 --username secretgarden
+python3 jscript.py like_post --post_id 6 --username secretgarden
+python3 jscript.py like_post --post_id 8 --username secretgarden
+python3 jscript.py like_post --post_id 10 --username secretgarden
+python3 jscript.py like_post --post_id 12 --username secretgarden
+python3 jscript.py like_post --post_id 14 --username secretgarden
+python3 jscript.py like_post --post_id 16 --username secretgarden
+python3 jscript.py like_post --post_id 18 --username secretgarden
+python3 jscript.py like_post --post_id 20 --username secretgarden
+echo "======================================================="
+
+
 
 
 
