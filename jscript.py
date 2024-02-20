@@ -44,7 +44,6 @@ def unfollow_account(follower,following):
     conn.commit()
     print(f"{follower} has now unfollowed {following}")
 
-#Show post they follow
 def show_followers_post(username):
     cursor.execute("""
     SELECT f.following_username, p.timestamp, p.content 
@@ -58,11 +57,10 @@ def show_followers_post(username):
     feed = cursor.fetchall()
     for post in feed:
         following_username, timestamp, content = post
-        print(f"Creator: {following_username}, Timestamp: {timestamp}, Content: {content}")
+        print(f"User: {following_username} posted '{content}' at {timestamp}")
 
 
-
-    
+# Need to Do
 def like_post(post_id, liker_id):
     cursor.execute("INSERT INTO likes (post_id, liker) VALUES (?, ?)", (post_id, liker_id))
     conn.commit()
@@ -75,15 +73,14 @@ def report_post(post_id, reporter_id):
 
 # Need to modify to make the account viewing the feed
 # not be able to see posts they have reported
-def display_feed(account_id):
-    cursor.execute("""SELECT p.id, p.creator, p.timestamp, p.content 
-                      FROM posts p 
-                      JOIN followers f ON p.creator = f.following_id 
-                      WHERE f.follower_id = ? 
-                      ORDER BY p.timestamp DESC""", (account_id,))
+def display_feed():
+    cursor.execute("""SELECT p.content, a.username, p.timestamp 
+                   FROM posts p  
+                   JOIN accounts a ON p.id = a.id""")
     feed = cursor.fetchall()
     for post in feed:
-        print(post)
+        content, username, timestamp = post
+        print(f"User: {username} posted '{content}' at {timestamp}")
 
 
 # ...
@@ -95,7 +92,6 @@ def main():
     parser.add_argument('--email', help='Email address (optional for create_user)')    
     parser.add_argument('--username', help='Username (required for create_account)')
     parser.add_argument('--content', help="The text that goes into a post")
-
     parser.add_argument('--follower', help='Follower ID (required for follow_account)')
     parser.add_argument('--following', help='Following ID (required for follow_account)')
     parser.add_argument('--post_id', type=int, help='Post ID (required for like_post and report_post)')
@@ -114,7 +110,8 @@ def main():
     elif args.action == 'show_followers_post':
         show_followers_post(args.username)
     elif args.action == 'display_feed':
-        display_feed(args.user_id)
+        display_feed()
+
     elif args.action == 'like_post':
         like_post(args.post_id, args.user_id)
     elif args.action == 'report_post':
