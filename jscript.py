@@ -61,13 +61,13 @@ def show_followers_post(username):
 
 
 # Need to Do
-def like_post(post_id, liker_id):
-    cursor.execute("INSERT INTO likes (post_id, liker) VALUES (?, ?)", (post_id, liker_id))
+def like_post(post_id, liker):
+    cursor.execute("INSERT INTO likes (post_id, liker) VALUES (?, (SELECT id FROM accounts WHERE username = ?))", (post_id, liker))
     conn.commit()
-    print(f"Post liked by {liker_id}")
+    print(f"Post liked by {liker}")
 
-def report_post(post_id, reporter_id):
-    cursor.execute("INSERT INTO reports (post_id, reporter) VALUES (?, ?)", (post_id, reporter_id))
+def report_post(post_id, reporter):
+    cursor.execute("INSERT INTO reports (post_id, reporter) VALUES (?, (SELECT id FROM accounts WHERE username = ?))", (post_id, reporter))
     conn.commit()
     print("Post reported successfully")
 
@@ -83,7 +83,6 @@ def display_feed():
         print(f"User: {username} posted '{content}' at {timestamp}")
 
 
-# ...
 
 def main():
     parser = argparse.ArgumentParser(description='Simple social network CLI')
@@ -94,7 +93,7 @@ def main():
     parser.add_argument('--content', help="The text that goes into a post")
     parser.add_argument('--follower', help='Follower ID (required for follow_account)')
     parser.add_argument('--following', help='Following ID (required for follow_account)')
-    parser.add_argument('--post_id', type=int, help='Post ID (required for like_post and report_post)')
+    parser.add_argument('--post_id', help='Post ID (required for like_post and report_post)')
     args = parser.parse_args()
 
     if args.action == 'create_user':
@@ -113,9 +112,9 @@ def main():
         display_feed()
 
     elif args.action == 'like_post':
-        like_post(args.post_id, args.user_id)
+        like_post(args.post_id, args.username)
     elif args.action == 'report_post':
-        report_post(args.post_id, args.user_id)
+        report_post(args.post_id, args.username)
     
 
 if __name__ == "__main__":
