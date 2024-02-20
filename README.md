@@ -8,4 +8,4 @@
 - python3 jscript.py follow_account --follower secretgarden --following ivorywhisper
 - python3 jscript.py unfollow_account --follower secretgarden --following ivorywhisper
 - python3 jscript.py show_followers_post --username secretgarden
-- python3 jscript.py display_feed
+- python3 jscript.py catch_up_feed
