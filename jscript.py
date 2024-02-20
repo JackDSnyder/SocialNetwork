@@ -116,7 +116,3 @@ if __name__ == "__main__":
 
 # Close the connection
 conn.close()
-
-
-
-SELECT p.creator,p.timestamp,p.content, COUNT(l.liker) AS Likes FROM posts p JOIN likes l ON p.id = l.post_id GROUP BY p.id;
