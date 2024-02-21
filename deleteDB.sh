@@ -1,1 +1,0 @@
-rm -f social_network.db
