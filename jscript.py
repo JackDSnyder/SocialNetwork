@@ -71,7 +71,7 @@ def report_post(post_id, reporter):
     print("Post reported successfully")
 
 def catch_up_feed():
-    cursor.execute("""SELECT p.creator,p.timestamp,p.content, COUNT(DISTINCT l.liker) AS Likes FROM posts p JOIN likes l ON p.id = l.post_id GROUP BY p.id;""")
+    cursor.execute("""SELECT p.creator,p.timestamp,p.content, COUNT(DISTINCT l.liker) AS Likes FROM posts p JOIN likes l ON p.id = l.post_id GROUP BY p.id""")
     feed = cursor.fetchall()
     for post in feed:
         content, username, timestamp, id = post
@@ -118,5 +118,3 @@ if __name__ == "__main__":
 conn.close()
 
 
-
-SELECT p.creator,p.timestamp,p.content, COUNT(l.liker) AS Likes FROM posts p JOIN likes l ON p.id = l.post_id GROUP BY p.id;
