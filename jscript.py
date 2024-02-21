@@ -2,7 +2,10 @@ import sqlite3
 from datetime import datetime
 import argparse
 import random
-import time
+
+# To Do
+# Report Functionality
+# One more special query
 
 conn = sqlite3.connect('social_network.db')
 cursor = conn.cursor()
@@ -28,7 +31,7 @@ def populate():
 
     # Create Posts
     lines = ["wants to punch", "wants to hug", "is thinking about", "is playing football with", "is whispering to"]
-    for i in range(75):
+    for i in range(150):
         timestamp = datetime.now()
         content = f"{random.choice(usernames)} {random.choice(lines)} {random.choice(usernames)}"
         cursor.execute("SELECT id FROM accounts WHERE username = ?", (random.choice(usernames),))
@@ -56,10 +59,10 @@ def populate():
     for i in range(200):
         liker = usernames[i]
         liked = []
-        for i in range(random.randrange(1,5)):
-            post_id = random.randrange(1,76)
+        for i in range(random.randrange(7,9)):
+            post_id = random.randrange(1,156)
             while post_id in liked:
-                post_id = random.randrange(1,76)
+                post_id = random.randrange(1,156)
             cursor.execute("INSERT INTO likes (post_id, liker) VALUES (?, (SELECT id FROM accounts WHERE username = ?))", (post_id, liker))
             conn.commit()
 
@@ -70,10 +73,25 @@ def create_user(email):
     cursor.execute("INSERT INTO users (email) VALUES (?)", (email,))
     conn.commit()
 
+def list_users():
+    cursor.execute("""SELECT * FROM users""")
+    users = cursor.fetchall()
+    for user in users:
+        uId, uEmail = user
+        print(f"Id: {uId}, Email: {uEmail}")
+
+
 def create_account(email, username):
     print(f"Account created with the username {username} with the email {email}")
     cursor.execute("INSERT INTO accounts (user_id, username) VALUES ((SELECT id FROM users WHERE email = ?),?)", (email,username))
     conn.commit()
+
+def list_accounts():
+    cursor.execute("""SELECT id, username FROM accounts""")
+    accounts = cursor.fetchall()
+    for account in accounts:
+        uId, uName = account
+        print(f"Id: {uId}, Username: {uName}")
 
 def create_post(username, content):
     if not username:
@@ -90,6 +108,11 @@ def create_post(username, content):
     else:
         print(f"User with username {username} does not exist.")
 
+def delete_post(post_id):
+    cursor.execute("""DELETE FROM posts WHERE id = ?""", (post_id,))
+    conn.commit()
+    print(f"Post {post_id} has been deleted")
+
 def follow_account(follower, following):
     cursor.execute("""
                    INSERT INTO followers (follower_id, follower_username, following_id,following_username) 
@@ -104,22 +127,6 @@ def unfollow_account(follower,following):
     conn.commit()
     print(f"{follower} has now unfollowed {following}")
 
-def show_followers_post(username):
-    cursor.execute("""
-    SELECT f.following_username, p.timestamp, p.content 
-    FROM posts p
-    JOIN accounts a ON p.creator = a.id
-    JOIN followers f ON a.username = f.following_username 
-    WHERE f.follower_username = ?
-    ORDER BY p.timestamp DESC
-    """, (username,))
-
-    feed = cursor.fetchall()
-    for post in feed:
-        following_username, timestamp, content = post
-        print(f"User: {following_username} posted '{content}' at {timestamp}")
-
-
 def like_post(post_id, liker):
     cursor.execute("INSERT INTO likes (post_id, liker) VALUES (?, (SELECT id FROM accounts WHERE username = ?))", (post_id, liker))
     conn.commit()
@@ -129,6 +136,22 @@ def report_post(post_id, reporter):
     cursor.execute("INSERT INTO reports (post_id, reporter) VALUES (?, (SELECT id FROM accounts WHERE username = ?))", (post_id, reporter))
     conn.commit()
     print("Post reported successfully")
+
+def show_user_feed(username):
+    cursor.execute("""
+    SELECT f.following_username, p.timestamp, p.content, p.id 
+    FROM posts p
+    JOIN accounts a ON p.creator = a.id
+    JOIN followers f ON a.username = f.following_username 
+    WHERE f.follower_username = ?
+    ORDER BY p.timestamp DESC
+    """, (username,))
+
+    feed = cursor.fetchall()
+    for post in feed:
+        username, timestamp, content, id = post
+        print(f"{username} posted '{content}' on {timestamp[5:7]}/{timestamp[8:10]}/{timestamp[:4]} at {timestamp[12:19]}, Id: {id}")
+        
 
 def catch_up_feed():
     print('\n')
@@ -154,14 +177,16 @@ def catch_up_feed():
 
 def main():
     parser = argparse.ArgumentParser(description='Simple social network CLI')
-    parser.add_argument('action', choices=['populate', 'create_user', 'create_account', 'follow_account', 'unfollow_account', 'create_post', 'catch_up_feed', 'like_post', 'report_post','show_followers_post'],
+    parser.add_argument('action', choices=['populate', 'create_user', 'create_account', 'follow_account', 'unfollow_account', 
+                                           'create_post', 'catch_up_feed', 'like_post', 'report_post','show_user_feed',
+                                           'delete_post', 'list_accounts', 'list_users'],
                         help='Action to perform')
-    parser.add_argument('--email', help='Email address (optional for create_user)')    
-    parser.add_argument('--username', help='Username (required for create_account)')
-    parser.add_argument('--content', help="The text that goes into a post")
-    parser.add_argument('--follower', help='Follower ID (required for follow_account)')
-    parser.add_argument('--following', help='Following ID (required for follow_account)')
-    parser.add_argument('--post_id', help='Post ID (required for like_post and report_post)')
+    parser.add_argument('--email')    
+    parser.add_argument('--username')
+    parser.add_argument('--content')
+    parser.add_argument('--follower')
+    parser.add_argument('--following')
+    parser.add_argument('--post_id')
     args = parser.parse_args()
 
     if args.action == 'create_user':
@@ -174,16 +199,22 @@ def main():
         follow_account(args.follower, args.following)
     elif args.action == 'unfollow_account':
         unfollow_account(args.follower, args.following)
-    elif args.action == 'show_followers_post':
-        show_followers_post(args.username)
+    elif args.action == 'show_user_feed':
+        show_user_feed(args.username)
     elif args.action == 'catch_up_feed':
         catch_up_feed()
     elif args.action == 'like_post':
         like_post(args.post_id, args.username)
     elif args.action == 'report_post':
         report_post(args.post_id, args.username)
+    elif args.action == 'delete_post':
+        delete_post(args.post_id)
     elif args.action == 'populate':
         populate()
+    elif args.action == 'list_accounts':
+        list_accounts()
+    elif args.action == 'list_users':
+        list_users()
     
 
 if __name__ == "__main__":
