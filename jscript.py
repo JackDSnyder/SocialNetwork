@@ -136,6 +136,17 @@ def report_post(post_id, reporter):
     cursor.execute("INSERT INTO reports (post_id, reporter) VALUES (?, (SELECT id FROM accounts WHERE username = ?))", (post_id, reporter))
     conn.commit()
     print("Post reported successfully")
+    
+    cursor.execute("SELECT COUNT(*) AS numReports FROM reports WHERE post_id = ?", (post_id,))
+    report = cursor.fetchone()
+    print("Number of Reports:", report[0])
+    
+    if report[0] == 3:
+        cursor.execute("DELETE FROM posts WHERE id = ?", (post_id,))
+        conn.commit() 
+        print("Post has been removed because of reports.")
+
+
 
 def show_user_feed(username):
     cursor.execute("""
