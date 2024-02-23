@@ -194,7 +194,7 @@ def rank_users(rank_type):
         user = cursor.fetchall()
         for post in user:
             username, reports = post
-            print(f"{username} has {reports} reports")
+            print(f"{username} is one of the edgiest accounts with {reports} reports")
 
     elif rank_type == "account_count":
         cursor.execute(f"""SELECT u.email, COUNT(*) AS accounts FROM users u 
@@ -204,8 +204,8 @@ def rank_users(rank_type):
             LIMIT 10;""")
         user = cursor.fetchall()
         for post in user:
-            username, accounts = post
-            print(f"{username} has {accounts} accounts")
+            email, accounts = post
+            print(f"{email} is one of the most chronically online users with {accounts} accounts")
 
     elif rank_type == "best_usernames":
         cursor.execute(f"""SELECT a.username FROM accounts a 
