@@ -12,6 +12,6 @@
 - python3 jscript.py follow_account --follower testUsername --following otherUser
 - python3 jscript.py unfollow_account --follower testUsername --following otherUser
 - python3 jscript.py like_post --post_id 1 --username usernameLiking
-- python3 jscript.py report_post --post_id 1 --username userGettingReported
+- python3 jscript.py report_post --post_id 1 --username usernameReporting
 - python3 jscript.py show_user_feed --username testUsername
 - python3 jscript.py catch_up_feed
