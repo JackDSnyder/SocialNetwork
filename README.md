@@ -1,7 +1,7 @@
 # SocialNetwork
 
 ### Script Commands
-
+- ./rebuild.sh will rebuild and populate the database 
 - python3 jscript.py populate
 - python3 jscript.py create_user --email test@test.com
 - python3 jscript.py create_account --email test@test.com --username testUsername
