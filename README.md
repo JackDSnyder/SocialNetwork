@@ -15,3 +15,6 @@
 - python3 jscript.py report_post --post_id 1 --username usernameReporting
 - python3 jscript.py show_user_feed --username testUsername
 - python3 jscript.py catch_up_feed
+- python3 jscript.py rank_users --rank_type rankType
+
+
