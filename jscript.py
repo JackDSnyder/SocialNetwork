@@ -16,7 +16,7 @@ def populate():
     "dylan.martin234@gmail.com","victoria789@yahoo.com","christopher.smith456@hotmail.com","grace345@outlook.com","daniel.miller789@aol.com","zoe.jones234@gmail.com","mason456@yahoo.com","amelia.morris789@hotmail.com","logan345@outlook.com","ava789@aol.com","noah.jones234@gmail.com","sophie.miller456@yahoo.com","joseph789@hotmail.com","ella.jones234@outlook.com", "samuel456@aol.com", "emily345@gmail.com", "zoey.morris789@yahoo.com", "benjamin345@outlook.com", "olivia.martin456@aol.com", "carter234@gmail.com","hannah_miller456@yahoo.com","jack789@hotmail.com","ava.brown234@outlook.com","luke_smith456@aol.com","grace234@gmail.com","lucas_morris789@yahoo.com","owen345@hotmail.com","charlotte.jones234@outlook.com","gabriel456@aol.com",
     "scarlett.morris789@gmail.com","liam234@yahoo.com","audrey.brown456@hotmail.com","henry789@outlook.com","ella.jones234@aol.com","wyatt456@gmail.com","zoey.morris789@yahoo.com","elijah345@hotmail.com","mia345@outlook.com","amelia789@aol.com","jacob234@gmail.com","chloe.miller456@yahoo.com","jackson789@hotmail.com","mia234@outlook.com","jacob.morris789@aol.com","william456@gmail.com","aubrey.brown456@yahoo.com","liam789@hotmail.com","charlotte234@outlook.com","ethan.morris789@aol.com","madison234@gmail.com","hannah.miller456@yahoo.com","carter789@hotmail.com","emily234@outlook.com","samuel.morris789@aol.com", "oliver456@gmail.com","ava.brown456@yahoo.com","benjamin789@hotmail.com","ella234@outlook.com","mason.morris789@aol.com","mia234@gmail.com","gabriel456@yahoo.com","scarlett789@hotmail.com","jack234@outlook.com","zoey.miller789@aol.com"]
     
-    usernames = ["apple123", "banana456", "cherry789", "grape234", "orange567", "pineapple890", "strawberry123", "watermelon456", "blueberry789", "raspberry234","kiwi567", "mango890", "apricot123", "peach456", "pear789", "plum234", "lemon567", "lime890", "coconut123", "papaya456","melon789", "avocado234", "fig567", "date890", "cranberry123", "elderberry456", "guava789", "honeydew234", "nectarine567", "lychee890","persimmon123", "boysenberry456", "mulberry789", "kumquat234", "tangerine567", "cantaloupe890", "dragonfruit123", "pomegranate456", "passionfruit789", "kiwifruit234",
+    usernames = ["jackjack123", "jackypopper456", "mackay789", "mcmackay234", "jacksnyder567", "mackayroy890", "strawberry123", "watermelon456", "blueberry789", "raspberry234","kiwi567", "mango890", "apricot123", "peach456", "pear789", "plum234", "lemon567", "lime890", "coconut123", "papaya456","melon789", "avocado234", "fig567", "date890", "cranberry123", "elderberry456", "guava789", "honeydew234", "nectarine567", "lychee890","persimmon123", "boysenberry456", "mulberry789", "kumquat234", "tangerine567", "cantaloupe890", "dragonfruit123", "pomegranate456", "passionfruit789", "kiwifruit234",
     "grapefruit567", "apricot890", "gooseberry123", "starfruit456", "rhubarb789", "blackberry234", "currant567", "mandarin890", "pawpaw123", "persimmon456","plantain789", "pomelo234", "quince567", "tamarillo890", "ugli123", "acai456", "bilberry789", "carissa234", "durian567", "jaboticaba890","kiwano123", "loganberry456", "mangosteen789", "papaya234", "passionfruit567", "pummelo890", "tamarind123", "yuzu456", "zucchini789", "almond234","cashew567", "chestnut890", "hazelnut123", "macadamia456", "peanut789", "pecan234", "pistachio567", "walnut890", "sunflower123", "daffodil456",
     "daisy789", "tulip234", "rose567", "lily890", "orchid123", "iris456", "hydrangea789", "jasmine234", "lilac567", "carnation890","sunflower123", "dahlia456", "chrysanthemum789", "poinsettia234", "aster567", "peony890", "gladiolus123", "cosmos456", "snapdragon789", "zinnia234","hibiscus567", "lavender890", "bougainvillea123", "freesia456", "gardenia789", "magnolia234", "marigold567", "narcissus890", "oleander123", "orchid456","petunia789", "rhododendron234", "tulip567", "violet890", "zinnia123", "daisy456", "tulip789", "rose234", "lily567", "orchid890",
     "iris123", "sunflower456", "hydrangea789", "jasmine234", "lilac567", "carnation890", "sunflower123", "dahlia456", "chrysanthemum789", "poinsettia234","aster567", "peony890", "gladiolus123", "cosmos456", "snapdragon789", "zinnia234", "hibiscus567", "lavender890", "bougainvillea123", "freesia456","gardenia789", "magnolia234", "marigold567", "narcissus890", "oleander123", "orchid456", "petunia789", "rhododendron234", "tulip567", "violet890", "crocus123", "daisy456", "lilac789", "sunflower234", "tulip567","rose890", "lily123", "orchid456", "iris789", "hydrangea234","jasmine567", "dahlia890", "chrysanthemum123", "poinsettia456", "aster789",
@@ -165,13 +165,12 @@ def show_user_feed(username):
         
 
 def catch_up_feed():
-    print('\n')
     # By Month
     # now = str(datetime.now())[5:9]
     # By Day
-    # now = str(datetime.now())[8:11]
+    now = str(datetime.now())[8:11]
     # By Minute
-    now = str(datetime.now())[14:18]
+    # now = str(datetime.now())[14:18]
     cursor.execute(f"""SELECT a.username,p.timestamp,p.content, COUNT(DISTINCT l.liker) AS likes FROM posts p 
                    JOIN likes l ON p.id = l.post_id 
                    JOIN accounts AS a on a.id = p.creator
@@ -184,13 +183,52 @@ def catch_up_feed():
         username, timestamp, content, likes = post
         print(f"{username} posted '{content}' on {timestamp[5:7]}/{timestamp[8:10]}/{timestamp[:4]} at {timestamp[12:19]} and got {likes} likes")
 
+def rank_users(rank_type):
+    if rank_type == "reports":
+        cursor.execute(f"""SELECT a.username, COUNT(*) AS reports FROM accounts a 
+            JOIN posts AS p on p.creator = a.id
+            JOIN reports AS r ON r.post_id = p.id
+            GROUP BY a.username
+            ORDER BY reports DESC
+            LIMIT 10;""")
+        user = cursor.fetchall()
+        for post in user:
+            username, reports = post
+            print(f"{username} has {reports} reports")
+
+    elif rank_type == "account_count":
+        cursor.execute(f"""SELECT u.email, COUNT(*) AS accounts FROM users u 
+            JOIN accounts AS a ON u.id = a.user_id
+            GROUP BY u.email
+            ORDER BY accounts DESC
+            LIMIT 10;""")
+        user = cursor.fetchall()
+        for post in user:
+            username, accounts = post
+            print(f"{username} has {accounts} accounts")
+
+    elif rank_type == "best_usernames":
+        cursor.execute(f"""SELECT a.username FROM accounts a 
+            WHERE a.username LIKE "%jack%" OR a.username LIKE "%mackay%";
+                       """)
+        user = cursor.fetchall()
+        for post in user:
+            username = post[0]
+            if 'jack' in username:
+                print(f"{username} is a cool username because it has Jack in it")
+            if 'mackay' in username:
+                print(f"{username} is a cool username because it has MacKay in it")
+
+    else:
+        print("Rank type not recognized")
+
 
 
 def main():
     parser = argparse.ArgumentParser(description='Simple social network CLI')
     parser.add_argument('action', choices=['populate', 'create_user', 'create_account', 'follow_account', 'unfollow_account', 
                                            'create_post', 'catch_up_feed', 'like_post', 'report_post','show_user_feed',
-                                           'delete_post', 'list_accounts', 'list_users'],
+                                           'delete_post', 'list_accounts', 'list_users', 'rank_users'],
                         help='Action to perform')
     parser.add_argument('--email')    
     parser.add_argument('--username')
@@ -198,6 +236,8 @@ def main():
     parser.add_argument('--follower')
     parser.add_argument('--following')
     parser.add_argument('--post_id')
+    parser.add_argument('--rank_type')
+
     args = parser.parse_args()
 
     if args.action == 'create_user':
@@ -226,6 +266,8 @@ def main():
         list_accounts()
     elif args.action == 'list_users':
         list_users()
+    elif args.action == 'rank_users':
+        rank_users(args.rank_type)
     
 
 if __name__ == "__main__":
