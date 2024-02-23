@@ -7,7 +7,7 @@
 - python3 jscript.py create_account --email test@test.com --username testUsername
 - python3 jscript.py create_post --username testUsername --content "anotherpost"
 - python3 jscript.py delete_post --post_id 1
-- pyton3 jscript.py list_acctions
+- pyton3 jscript.py list_accounts
 - pyton3 jscript.py list_users
 - python3 jscript.py follow_account --follower testUsername --following otherUser
 - python3 jscript.py unfollow_account --follower testUsername --following otherUser
